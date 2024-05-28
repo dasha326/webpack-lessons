@@ -10,8 +10,14 @@ const stylesHandler = isProduction
   ? MiniCssExtractPlugin.loader
   : "style-loader";
 
+const pageFiles = ['index', 'main'];
+
 const config = {
-  entry: "./src/index.js",
+  context: path.resolve(__dirname, './src'),
+  entry: pageFiles.reduce((result, file) => {
+    result[file] = `./${file}.js`;
+    return result;
+  }, {}),
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: '[name].js',
@@ -19,18 +25,25 @@ const config = {
   devServer: {
     open: true,
     host: "localhost",
+    hot: false,
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: "index.html",
-      minify: false
-    }),
-
-    // Add your plugins here
-    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
-  ],
+  plugins: [].concat(
+      pageFiles.map(file =>
+        new HtmlWebpackPlugin({
+          inject: 'head',
+          template: `./${file}.html`,
+          filename: `./${file}.html`,
+          chunks: [file],
+          minify: false
+        })
+      )
+  ).filter(Boolean),
   module: {
     rules: [
+      {
+        test: /\.(html)$/i,
+        loader: "html-loader",
+      },
       {
         test: /\.(js|jsx)$/i,
         loader: "babel-loader",
