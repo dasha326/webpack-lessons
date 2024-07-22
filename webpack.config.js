@@ -3,6 +3,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const FontminPlugin = require('fontmin-webpack');
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -21,6 +22,7 @@ const config = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: '[name].js',
+    clean: true
   },
   devServer: {
     open: true,
@@ -36,8 +38,21 @@ const config = {
           chunks: [file],
           minify: false
         })
-      )
-  ).filter(Boolean),
+      ),
+      [
+          new FontminPlugin({
+            autodetect: true,
+            glyphs: ['\uf0c8'],
+            allowedFilesRegex: null,
+            skippedFilesRegex: null,
+            textRegex: /\.(js|css|html)$/,
+            webpackCompilationHook: 'thisCompilation',
+          }),
+          new MiniCssExtractPlugin({
+            filename: 'styles/[name][hash].css',
+          })
+      ].filter(Boolean)
+  ),
   module: {
     rules: [
       {
@@ -57,12 +72,29 @@ const config = {
         use: [stylesHandler, "css-loader", "postcss-loader"],
       },
       {
-        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-        type: "asset",
+        test: /\.(woff2?|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/font/[name].[ext]',
+        },
+        parser: {
+          dataUrlCondition: {
+            maxSize: 10 * 1024,
+          },
+        },
       },
-
-      // Add your rules for custom modules here
-      // Learn more about loaders from https://webpack.js.org/loaders/
+      {
+        test: /\.(png|jpe?g|gif|svg|webp|ico|avif)$/i,
+        type: 'asset',
+        generator: {
+          filename: 'assets/img/[name][hash][ext]'
+        },
+        parser: {
+          dataUrlCondition: {
+            maxSize: 10 * 1024,
+          },
+        },
+      },
     ],
   },
 };

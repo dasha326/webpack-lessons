@@ -23,6 +23,7 @@
     "babel-loader": "^8.3.0",
     "css-loader": "^6.7.1",
     "eslint": "^9.3.0",
+    "fontmin-webpack": "^4.0.0",
     "globals": "^15.2.0",
     "html-loader": "^5.0.0",
     "html-webpack-plugin": "^5.5.0",

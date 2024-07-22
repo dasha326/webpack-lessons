@@ -1,0 +1,42 @@
+@font-face {
+	font-family: 'Hack';
+	src: url('assets/hack-bold.ttf') format('truetype');
+}
+
+$c-drak-storke: rgba(184, 225, 236, 0.901);
+
+button {
+	font-size: 16px;
+	font-weight: bold;
+	transition: .2s ease-in-out;
+	border-bottom-left-radius: 20px;
+	border-top-right-radius: 20px;
+}
+
+.active {
+	transform: scale(0.9);
+	opacity: 0.75;
+}
+
+
+.text {
+	font-family: 'Hack', sans-serif;
+	font-style: inherit;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+body {
+	display: flex;
+	gap: 20px;
+	flex-flow: column nowrap;
+	background-color: $c-drak-storke;
+	user-select: none;
+}
+
+
+
+img {
+	width: 200px;
+	height: auto;
+}
